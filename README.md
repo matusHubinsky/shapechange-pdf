@@ -10,7 +10,7 @@
 Bash script for spliting every page of the PDF into the 4 parts and merging them together.
 You can use the script on the directory with PDFs or a single file.
 
-## Instalation
+## Installation
 
 ```
 git clone https://github.com/matusHubinsky/shapechange-pdf
