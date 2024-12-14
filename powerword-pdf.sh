@@ -14,7 +14,7 @@ new=$(echo $1 | rev | cut -d "/" -f 1 | rev | cut -d "." -f 1)
 start=$(date +%s)
 progress=$((0))
 
-density=$((600))
+density=$((900))
 page_width=$(pdfinfo "$input_pdf" | grep "Page size" | awk '{print $3}')
 page_height=$(pdfinfo "$input_pdf" | grep "Page size" | awk '{print $5}')
 page_width_px=$(echo "($page_width * $density / 72)/1" | bc)
