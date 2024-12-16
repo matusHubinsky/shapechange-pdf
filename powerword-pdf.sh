@@ -5,6 +5,9 @@
 ###############################################################################
 
 input_pdf=$1
+
+[ -f "${input_pdf}" ] || exit 1
+
 parts=4
 pages=$(pdfinfo "$input_pdf" | grep Pages | awk '{print $2}')
 pages_real=$((pages  / 2 - 1))
@@ -65,18 +68,33 @@ for i in $(seq 0 $total_pages); do
 done
 
 k=$((0))
-for i in $(seq 0 $total_pages); do
-    img="part-${i}.png"
-    magick "$img" -crop "50%x50%+0+0" "$k.png"  &> /dev/null
-    k=$((k+1))
-    magick "$img" -crop "50%x50%+$half_width+0" "$k.png"  &> /dev/null
-    k=$((k+1))
-    magick "$img" -crop "50%x50%+0+$half_height" "$k.png"  &> /dev/null
-    k=$((k+1))
-    magick "$img" -crop "50%x50%+$half_width+$half_height" "$k.png" &> /dev/null
-    k=$((k+1))
-    yap
-done
+
+if [ -n "$2" ]; then
+    if [[ "$2" == "-half" ]]; then
+        # if argument -half is provided, we need to split the page into half
+        for i in $(seq 0 $total_pages); do
+            img="part-${i}.png"
+            magick "$img" -crop "50%x100%+0+0" "$k.png"  &> /dev/null
+            k=$((k+1))
+            magick "$img" -crop "50%x100%+$(echo "scale=0; $page_height_px / 2" | bc)+0" "$k.png"  &> /dev/null
+            k=$((k+1))
+            yap
+        done
+    fi
+else
+    for i in $(seq 0 $total_pages); do
+        img="part-${i}.png"
+        magick "$img" -crop "50%x50%+0+0" "$k.png"  &> /dev/null
+        k=$((k+1))
+        magick "$img" -crop "50%x50%+$half_width+0" "$k.png"  &> /dev/null
+        k=$((k+1))
+        magick "$img" -crop "50%x50%+0+$half_height" "$k.png"  &> /dev/null
+        k=$((k+1))
+        magick "$img" -crop "50%x50%+$half_width+$half_height" "$k.png" &> /dev/null
+        k=$((k+1))
+        yap
+    done
+fi
 
 for i in $(seq 0 $total_pages); do
     # echo "${i}.png ${i}.pdf"
