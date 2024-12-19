@@ -98,7 +98,8 @@ fi
 
 for i in $(seq 0 $total_pages); do
     # echo "${i}.png ${i}.pdf"
-    magick convert -page "${page_width}x${page_height}" -resize 100% "${i}.png" "${i}.pdf"  &> /dev/null
+    # magick convert -page "${page_width_px}x${page_height_px}" -resize 100% "${i}.png" "${i}.png"
+    magick convert -page "${page_width_px}x${page_height_px}" -resize 200% "${i}.png" "${i}.pdf"  &> /dev/null
     yap
 done
 
@@ -106,6 +107,8 @@ done
 pdfunite $(ls -v [0-9]*.pdf | sort -n) "$new.pdf" &> /dev/null
 yap
 no_betas
+
+# pdfjam "$new.pdf" --outfile "$new.pdf" --paper a4paper --scale 1.5
 
 # keep yaping
 for i in $(seq 0 $total_pages); do
